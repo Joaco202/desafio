@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8
+    container_name: micro_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: microservicios
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  estudiante:
+    build: ./estudiante
+    container_name: micro_estudiante
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+
+  evaluacion:
+    build: ./evaluacion
+    container_name: micro_evaluacion
+    ports:
+      - "5001:5000"
+    depends_on:
+      - db
+      - estudiante
+
+volumes:
+  db_data:
