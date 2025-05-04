@@ -37,9 +37,17 @@ def crear_evaluacion():
     if resp.status_code != 200:
         return jsonify({'error':'Estudiante no existe'}), 400
 
+    # Validar nota entre 1 y 7
+    try:
+        nota = float(data['nota'])
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Nota inválida'}), 400
+    if nota < 1 or nota > 7:
+        return jsonify({'error': 'La nota debe estar entre 1 y 7'}), 400
+
     ev = Evaluacion(
         rut_estudiante=data['rut_estudiante'], semestre=data['semestre'],
-        asignatura=data['asignatura'], nota=data['nota']
+        asignatura=data['asignatura'], nota=nota
     )
     db.session.add(ev)
     db.session.commit()
